@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "start": "npx start-server -s ./dist -p $PORT",
     "lint": "eslint . --ext .js,.jsx",
     "format": "prettier --write .",
     "preview": "vite preview"
