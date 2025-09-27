@@ -1,2 +1,6 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Snbit1/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Snbit1/frontend-project-12/actions)
+
+
+### Демо приложения
+[Посмотреть задеплоенное приложение](https://frontend-project-12-marp.onrender.com)
