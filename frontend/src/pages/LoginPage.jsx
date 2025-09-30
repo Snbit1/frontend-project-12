@@ -1,16 +1,39 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Formik, Form, Field } from 'formik'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import api from '../api/axios'
+import { loginSuccess } from '../slices/authSlice'
 
 const LoginPage = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [error, setError] = useState(null)
   return (
     <div style={{ maxWidth: 420 }}>
       <h2>Вход</h2>
 
       <Formik
         initialValues={{ username: '', password: '' }}
-        onSubmit={(values, { setSubmitting }) => {
-          console.log('Форма отправлена:', values)
-          setSubmitting(false)
+        onSubmit={async (values, { setSubmitting }) => {
+          setError(null)
+          try {
+            const response = await api.post('/login', values)
+            const { token, user } = response.data
+            if (!token) {
+              throw new Error('Токен не получен')
+            }
+            dispatch(loginSuccess({ token, user }))
+            navigate('/')
+          } catch (err) {
+            if (err.response && err.response.status === 401) {
+              setError('Неверное имя пользователя или пароль')
+            } else {
+              setError('Ошибка сети или сервера. Попробуйте позже.')
+            }
+          } finally {
+            setSubmitting(false)
+          }
         }}
       >
         {({ isSubmitting }) => (
@@ -56,6 +79,8 @@ const LoginPage = () => {
             >
               Войти
             </button>
+
+            {error && <p style={{ color: 'red' }}>{error}</p>}
           </Form>
         )}
       </Formik>
