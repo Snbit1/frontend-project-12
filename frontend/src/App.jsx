@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import HomePage from './pages/HomePage'
+import ChatPage from './pages/ChatPage'
 import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import RequireAuth from './components/RequireAuth'
@@ -34,7 +34,7 @@ const App = () => {
       <main style={{ padding: '16px' }}>
         <Routes>
           <Route element={<RequireAuth />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<ChatPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<NotFoundPage />} />
