@@ -1,14 +1,14 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "type": "commonjs",
+  "type": "module",
   "description": "[![Actions Status](https://github.com/Snbit1/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Snbit1/frontend-project-12/actions)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build --prefix frontend",
     "start": "npm run start --prefix frontend",
-   "dev": "npm run dev --prefix frontend"
+    "dev": "npm run dev --prefix frontend"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/Snbit1/frontend-project-12#readme",
   "dependencies": {
-    "@hexlet/chat-server": "^2.0.4"
+    "@hexlet/chat-server": "^2.0.4",
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
   }
 }
