@@ -2,7 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchChannels } from '../slices/channelsSlice'
 import { addMessageLocal, fetchMessages } from '../slices/messagesSlice'
-import { Row, Col, ListGroup, Form, Button } from 'react-bootstrap'
+import {
+  addChannelLocal,
+  removeChannelLocal,
+  renameChannelLocal,
+} from '../slices/channelsSlice'
+import RenameChannelModal from '../components/RenameChannelModal'
+import {
+  Row,
+  Col,
+  ListGroup,
+  Form,
+  Button,
+  Dropdown,
+  ButtonGroup,
+} from 'react-bootstrap'
+import AddChannelModal from '../components/AddChannelModal'
 import socket from '../socket'
 
 const ChatPage = () => {
@@ -16,6 +31,55 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState('')
   const [selectedChannelId, setSelectedChannelId] = useState(null)
   const [isConnected, setIsConnected] = useState(socket.connected)
+  const [showAddChannelModal, setShowAddChannelModal] = useState(false)
+  const [showRenameModal, setShowRenameModal] = useState(false)
+  const [channelToRename, setChannelToRename] = useState(null)
+
+  const handleOpenAddChannel = () => setShowAddChannelModal(true)
+  const handleCloseAddChannel = () => setShowAddChannelModal(false)
+
+  const handleAddChannel = async (name) => {
+    return new Promise((resolve) => {
+      socket.emit('newChannel', { name }, (response) => {
+        if (response.status === 'ok') {
+          console.log('Канал добавлен')
+        }
+        resolve()
+      })
+    })
+  }
+
+  const handleCloseRenameChannel = () => {
+    setShowRenameModal(false)
+    setChannelToRename(null)
+  }
+
+  const handleRenameChannel = async (id, newName) => {
+    return new Promise((resolve) => {
+      socket.emit('renameChannel', { id, name: newName }, (response) => {
+        if (response.status === 'ok') {
+          dispatch(renameChannelLocal({ id, name: newName }))
+        }
+        resolve()
+      })
+    })
+  }
+
+  const handleOpenRenameChannel = (channel) => {
+    setChannelToRename(channel)
+    setShowRenameModal(true)
+  }
+
+  const handleDeleteChannel = (id) => {
+    socket.emit('deleteChannel', { id }, (response) => {
+      if (response.status === 'ok') {
+        dispatch(removeChannelLocal(id))
+        if (selectedChannelId === id && channels.length > 0) {
+          setSelectedChannelId(channels[0].id)
+        }
+      }
+    })
+  }
 
   useEffect(() => {
     const handleNewMessage = (message) => {
@@ -56,9 +120,38 @@ const ChatPage = () => {
     }
   }, [channels, selectedChannelId])
 
-  if (channelsStatus === 'loading' || messagesStatus === 'loading') {
-    return <p>Загрузка...</p>
-  }
+  useEffect(() => {
+    const handleNewChannel = (channel) => {
+      console.log('Получен новый канал от сервера:', channel)
+      dispatch(addChannelLocal({ ...channel, removable: true }))
+      setSelectedChannelId(channel.id)
+    }
+    socket.on('newChannel', handleNewChannel)
+    return () => {
+      socket.off('newChannel', handleNewChannel)
+    }
+  }, [dispatch])
+
+  useEffect(() => {
+    const handleRenameChannelSocket = (channel) => {
+      dispatch(renameChannelLocal(channel))
+    }
+
+    const handleDeleteChannelSocket = ({ id }) => {
+      dispatch(removeChannelLocal(id))
+      if (selectedChannelId === id && channels.length > 0) {
+        setSelectedChannelId(channels[0].id)
+      }
+    }
+
+    socket.on('renameChannel', handleRenameChannelSocket)
+    socket.on('deleteChannel', handleDeleteChannelSocket)
+
+    return () => {
+      socket.off('renameChannel', handleRenameChannelSocket)
+      socket.off('deleteChannel', handleDeleteChannelSocket)
+    }
+  }, [dispatch, selectedChannelId, channels])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -83,21 +176,62 @@ const ChatPage = () => {
     (m) => m.channelId === selectedChannelId
   )
 
+  if (channelsStatus === 'loading' || messagesStatus === 'loading') {
+    return <p>Загрузка...</p>
+  }
+
   return (
     <Row>
       <Col md={3}>
-        <h5>Каналы</h5>
+        <div className="d-flex justify-content-between align-items-center">
+          <h5>Каналы</h5>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={handleOpenAddChannel}
+          >
+            +
+          </Button>
+        </div>
         <ListGroup>
-          {channels.map((c, index) => (
-            <ListGroup.Item
-              key={c.id ?? `channel-${index}`}
-              active={c.id === selectedChannelId}
-              onClick={() => setSelectedChannelId(c.id)}
-              style={{ cursor: 'pointer' }}
-            >
-              {c.name}
-            </ListGroup.Item>
-          ))}
+          {channels.map((c, index) => {
+            const isRemovable = c.removable
+
+            return (
+              <ListGroup.Item
+                key={c.id ?? `channel-${index}`}
+                active={c.id === selectedChannelId}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <span onClick={() => setSelectedChannelId(c.id)}>
+                  {`# ${c.name}`}
+                </span>
+
+                {isRemovable && (
+                  <Dropdown as={ButtonGroup}>
+                    <Dropdown.Toggle
+                      split
+                      variant="secondary"
+                      id={`dropdown-${c.id}`}
+                    />
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => handleOpenRenameChannel(c)}>
+                        Переименовать
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => handleDeleteChannel(c.id)}>
+                        Удалить
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                )}
+              </ListGroup.Item>
+            )
+          })}
         </ListGroup>
       </Col>
 
@@ -144,6 +278,19 @@ const ChatPage = () => {
           </Button>
         </Form>
       </Col>
+      <AddChannelModal
+        show={showAddChannelModal}
+        handleClose={handleCloseAddChannel}
+        channels={channels}
+        onAdd={handleAddChannel}
+      />
+      <RenameChannelModal
+        show={showRenameModal}
+        handleClose={handleCloseRenameChannel}
+        channels={channels}
+        channel={channelToRename}
+        onRename={handleRenameChannel}
+      />
     </Row>
   )
 }
