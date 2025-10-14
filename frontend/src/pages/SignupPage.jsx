@@ -15,7 +15,7 @@ import {
   Card,
 } from 'react-bootstrap'
 
-const LoginPage = () => {
+const SignupPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [error, setError] = useState(null)
@@ -28,6 +28,9 @@ const LoginPage = () => {
     password: Yup.string()
       .min(6, 'Минимум 6 символов')
       .required('Обязательное поле'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Пароли должны совпадать')
+      .required('Обязательное поле'),
   })
 
   return (
@@ -36,17 +39,25 @@ const LoginPage = () => {
         <Col md={6}>
           <Card>
             <Card.Body>
-              <h2 className="mb-4 text-center">Вход</h2>
+              <h2 className="mb-4 text-center">Регистрация</h2>
 
               {error && <Alert variant="danger">{error}</Alert>}
 
               <Formik
-                initialValues={{ username: '', password: '' }}
+                initialValues={{
+                  username: '',
+                  password: '',
+                  confirmPassword: '',
+                }}
                 validationSchema={validationSchema}
                 onSubmit={async (values, { setSubmitting }) => {
                   setError(null)
                   try {
-                    const response = await api.post('/login', values)
+                    const { username, password } = values
+                    const response = await api.post('/signup', {
+                      username,
+                      password,
+                    })
                     dispatch(
                       loginSuccess({
                         token: response.data.token,
@@ -55,8 +66,8 @@ const LoginPage = () => {
                     )
                     navigate('/')
                   } catch (err) {
-                    if (err.response && err.response.status === 401) {
-                      setError('Неверное имя пользователя или пароль')
+                    if (err.response && err.response.status === 409) {
+                      setError('Пользователь с таким именем уже существует')
                     } else {
                       setError('Ошибка сети или сервера. Попробуйте позже.')
                     }
@@ -99,17 +110,34 @@ const LoginPage = () => {
                       />
                     </BootstrapForm.Group>
 
+                    <BootstrapForm.Group className="mb-3">
+                      <BootstrapForm.Label>
+                        Подтвердите пароль
+                      </BootstrapForm.Label>
+                      <Field
+                        name="confirmPassword"
+                        type="password"
+                        as={BootstrapForm.Control}
+                        placeholder="Повторите пароль"
+                      />
+                      <ErrorMessage
+                        name="confirmPassword"
+                        component="div"
+                        className="text-danger small mt-1"
+                      />
+                    </BootstrapForm.Group>
+
                     <Button
                       variant="primary"
                       type="submit"
                       disabled={isSubmitting}
                       className="w-100"
                     >
-                      Войти
+                      Зарегистрироваться
                     </Button>
 
                     <div className="mt-3 text-center">
-                      <Link to="/signup">Нет аккаунта? Зарегистрироваться</Link>
+                      <Link to="/login">Уже есть аккаунт? Войти</Link>
                     </div>
                   </Form>
                 )}
@@ -122,4 +150,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default SignupPage

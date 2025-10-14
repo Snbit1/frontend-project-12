@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchChannels } from '../slices/channelsSlice'
-import { addMessageLocal, fetchMessages } from '../slices/messagesSlice'
+import {
+  addMessageLocal,
+  fetchMessages,
+  clearMessages,
+} from '../slices/messagesSlice'
 import {
   addChannelLocal,
   removeChannelLocal,
   renameChannelLocal,
+  clearChannels,
 } from '../slices/channelsSlice'
 import RenameChannelModal from '../components/RenameChannelModal'
 import {
@@ -82,6 +87,15 @@ const ChatPage = () => {
   }
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(clearMessages())
+      dispatch(clearChannels())
+      console.log('Данные очищены')
+    }, 600000)
+    return () => clearTimeout(timer)
+  }, [dispatch])
+
+  useEffect(() => {
     const handleNewMessage = (message) => {
       dispatch(addMessageLocal(message))
     }
@@ -110,8 +124,14 @@ const ChatPage = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchChannels())
-    dispatch(fetchMessages())
+    const localChannels = JSON.parse(localStorage.getItem('channels')) || []
+    if (localChannels.length === 0) {
+      dispatch(fetchChannels())
+    }
+    const localMessages = JSON.parse(localStorage.getItem('messages')) || []
+    if (localMessages.length === 0) {
+      dispatch(fetchMessages())
+    }
   }, [dispatch])
 
   useEffect(() => {

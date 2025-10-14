@@ -16,21 +16,28 @@ export const fetchChannels = createAsyncThunk(
 const channelsSlice = createSlice({
   name: 'channels',
   initialState: {
-    items: [],
+    items: JSON.parse(localStorage.getItem('channels')) || [],
     status: 'idle',
     error: null,
   },
   reducers: {
     addChannelLocal(state, action) {
       state.items.push(action.payload)
+      localStorage.setItem('channels', JSON.stringify(state.items))
     },
     removeChannelLocal(state, action) {
       state.items = state.items.filter((c) => c.id !== action.payload)
+      localStorage.setItem('channels', JSON.stringify(state.items))
     },
     renameChannelLocal(state, action) {
       const { id, name } = action.payload
       const ch = state.items.find((c) => c.id === id)
       if (ch) ch.name = name
+      localStorage.setItem('channels', JSON.stringify(state.items))
+    },
+    clearChannels(state) {
+      state.items = []
+      localStorage.removeItem('channels')
     },
   },
   extraReducers: (builder) => {
@@ -41,7 +48,10 @@ const channelsSlice = createSlice({
       })
       .addCase(fetchChannels.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        state.items = action.payload
+        if (Array.isArray(action.payload) && action.payload.length > 0) {
+          state.items = action.payload
+          localStorage.setItem('channels', JSON.stringify(state.items))
+        }
       })
       .addCase(fetchChannels.rejected, (state, action) => {
         state.status = 'failed'
@@ -50,6 +60,10 @@ const channelsSlice = createSlice({
   },
 })
 
-export const { addChannelLocal, removeChannelLocal, renameChannelLocal } =
-  channelsSlice.actions
+export const {
+  addChannelLocal,
+  removeChannelLocal,
+  renameChannelLocal,
+  clearChannels,
+} = channelsSlice.actions
 export default channelsSlice.reducer

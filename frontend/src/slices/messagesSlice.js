@@ -16,21 +16,28 @@ export const fetchMessages = createAsyncThunk(
 const messagesSlice = createSlice({
   name: 'messages',
   initialState: {
-    items: [],
+    items: JSON.parse(localStorage.getItem('messages')) || [],
     status: 'idle',
     error: null,
   },
   reducers: {
     addMessageLocal(state, action) {
       state.items.push(action.payload)
+      localStorage.setItem('messages', JSON.stringify(state.items))
     },
     editMessageLocal(state, action) {
       const { id, body } = action.payload
       const m = state.items.find((x) => x.id === id)
       if (m) m.body = body
+      localStorage.setItem('messages', JSON.stringify(state.items))
     },
     removeMessageLocal(state, action) {
       state.items = state.items.filter((m) => m.id !== action.payload)
+      localStorage.setItem('messages', JSON.stringify(state.items))
+    },
+    clearMessages(state) {
+      state.items = []
+      localStorage.removeItem('messages')
     },
   },
   extraReducers: (builder) => {
@@ -41,7 +48,10 @@ const messagesSlice = createSlice({
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        state.items = action.payload
+        if (Array.isArray(action.payload) && action.payload.length > 0) {
+          state.items = action.payload
+          localStorage.setItem('messages', JSON.stringify(state.items))
+        }
       })
       .addCase(fetchMessages.rejected, (state, action) => {
         state.status = 'failed'
@@ -50,6 +60,10 @@ const messagesSlice = createSlice({
   },
 })
 
-export const { addMessageLocal, editMessageLocal, removeMessageLocal } =
-  messagesSlice.actions
+export const {
+  addMessageLocal,
+  editMessageLocal,
+  removeMessageLocal,
+  clearMessages,
+} = messagesSlice.actions
 export default messagesSlice.reducer
