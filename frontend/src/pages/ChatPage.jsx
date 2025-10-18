@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useTransition } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchChannels } from '../slices/channelsSlice'
 import {
@@ -24,8 +24,11 @@ import {
 } from 'react-bootstrap'
 import AddChannelModal from '../components/AddChannelModal'
 import socket from '../socket'
+import api from '../api/axios'
+import { useTranslation } from 'react-i18next'
 
 const ChatPage = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const channels = useSelector((s) => s.channels.items)
   const messages = useSelector((s) => s.messages.items)
@@ -44,14 +47,12 @@ const ChatPage = () => {
   const handleCloseAddChannel = () => setShowAddChannelModal(false)
 
   const handleAddChannel = async (name) => {
-    return new Promise((resolve) => {
-      socket.emit('newChannel', { name }, (response) => {
-        if (response.status === 'ok') {
-          console.log('Канал добавлен')
-        }
-        resolve()
-      })
-    })
+    try {
+      await api.post('/channels', { name })
+      handleCloseAddChannel()
+    } catch (err) {
+      console.error('Ошибка добавления канала', err)
+    }
   }
 
   const handleCloseRenameChannel = () => {
@@ -60,14 +61,12 @@ const ChatPage = () => {
   }
 
   const handleRenameChannel = async (id, newName) => {
-    return new Promise((resolve) => {
-      socket.emit('renameChannel', { id, name: newName }, (response) => {
-        if (response.status === 'ok') {
-          dispatch(renameChannelLocal({ id, name: newName }))
-        }
-        resolve()
-      })
-    })
+    try {
+      await api.patch(`/channels/${id}`, { name: newName })
+      handleCloseRenameChannel()
+    } catch (err) {
+      console.error('Ошибка переименования канала', err)
+    }
   }
 
   const handleOpenRenameChannel = (channel) => {
@@ -75,15 +74,16 @@ const ChatPage = () => {
     setShowRenameModal(true)
   }
 
-  const handleDeleteChannel = (id) => {
-    socket.emit('deleteChannel', { id }, (response) => {
-      if (response.status === 'ok') {
-        dispatch(removeChannelLocal(id))
-        if (selectedChannelId === id && channels.length > 0) {
-          setSelectedChannelId(channels[0].id)
-        }
+  const handleDeleteChannel = async (id) => {
+    try {
+      await api.delete(`/channels/${id}`)
+      dispatch(removeChannelLocal(id))
+      if (selectedChannelId === id && channels.length > 0) {
+        setSelectedChannelId(channels[0].id)
       }
-    })
+    } catch (err) {
+      console.error('Ошибка удаления канала', err)
+    }
   }
 
   useEffect(() => {
@@ -175,21 +175,18 @@ const ChatPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!newMessage.trim()) return
-    if (!selectedChannelId) return
+    if (!newMessage.trim() || !selectedChannelId) return
 
-    const messagePayload = {
-      body: newMessage,
-      channelId: selectedChannelId,
-      username,
+    try {
+      await api.post('/messages', {
+        body: newMessage,
+        channelId: selectedChannelId,
+        username,
+      })
+      setNewMessage('')
+    } catch (err) {
+      console.error('Ошибка отправки сообщения', err)
     }
-    socket.emit('newMessage', messagePayload, (response) => {
-      if (response.status === 'ok') {
-        setNewMessage('')
-      } else {
-        console.error('Ошибка отправки:', response.error)
-      }
-    })
   }
 
   const filteredMessages = messages.filter(
@@ -204,7 +201,7 @@ const ChatPage = () => {
     <Row>
       <Col md={3}>
         <div className="d-flex justify-content-between align-items-center">
-          <h5>Каналы</h5>
+          <h5>{t('channels')}</h5>
           <Button
             variant="outline-primary"
             size="sm"
@@ -241,10 +238,10 @@ const ChatPage = () => {
                     />
                     <Dropdown.Menu>
                       <Dropdown.Item onClick={() => handleOpenRenameChannel(c)}>
-                        Переименовать
+                        {t('rename')}
                       </Dropdown.Item>
                       <Dropdown.Item onClick={() => handleDeleteChannel(c.id)}>
-                        Удалить
+                        {t('delete')}
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
@@ -257,14 +254,14 @@ const ChatPage = () => {
 
       <Col md={9}>
         <h5>
-          Сообщения{' '}
+          {t('messages')}{' '}
           <span
             style={{
               fontSize: '0.8em',
               color: isConnected ? 'green' : 'red',
             }}
           >
-            {isConnected ? 'Онлайн' : 'Оффлайн'}
+            {isConnected ? t('online') : t('offline')}
           </span>
         </h5>
         <div
@@ -288,13 +285,13 @@ const ChatPage = () => {
           <Form.Group className="mb-3">
             <Form.Control
               type="text"
-              placeholder="Введите сообщение..."
+              placeholder={t('placeholderMessage')}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
           </Form.Group>
           <Button variant="primary" type="submit">
-            Отправить
+            {t('send')}
           </Button>
         </Form>
       </Col>

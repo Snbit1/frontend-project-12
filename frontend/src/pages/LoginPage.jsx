@@ -14,20 +14,22 @@ import {
   Alert,
   Card,
 } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 
 const LoginPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [error, setError] = useState(null)
 
   const validationSchema = Yup.object({
     username: Yup.string()
-      .min(3, 'Минимум 3 символа')
-      .max(20, 'Максимум 20 символов')
-      .required('Обязательное поле'),
+      .min(3, t('usernameMin'))
+      .max(20, t('usernameMax'))
+      .required(t('requiredField')),
     password: Yup.string()
-      .min(6, 'Минимум 6 символов')
-      .required('Обязательное поле'),
+      .min(6, t('passwordMin'))
+      .required(t('requiredField')),
   })
 
   return (
@@ -36,7 +38,7 @@ const LoginPage = () => {
         <Col md={6}>
           <Card>
             <Card.Body>
-              <h2 className="mb-4 text-center">Вход</h2>
+              <h2 className="mb-4 text-center">{t('entrance')}</h2>
 
               {error && <Alert variant="danger">{error}</Alert>}
 
@@ -56,9 +58,9 @@ const LoginPage = () => {
                     navigate('/')
                   } catch (err) {
                     if (err.response && err.response.status === 401) {
-                      setError('Неверное имя пользователя или пароль')
+                      setError(t('incorrectUser'))
                     } else {
-                      setError('Ошибка сети или сервера. Попробуйте позже.')
+                      setError(t('networkError'))
                     }
                   } finally {
                     setSubmitting(false)
@@ -68,14 +70,12 @@ const LoginPage = () => {
                 {({ isSubmitting }) => (
                   <Form>
                     <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>
-                        Имя пользователя
-                      </BootstrapForm.Label>
+                      <BootstrapForm.Label>{t('username')}</BootstrapForm.Label>
                       <Field
                         name="username"
                         type="text"
                         as={BootstrapForm.Control}
-                        placeholder="Введите имя пользователя"
+                        placeholder={t('enterUsername')}
                       />
                       <ErrorMessage
                         name="username"
@@ -85,12 +85,12 @@ const LoginPage = () => {
                     </BootstrapForm.Group>
 
                     <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>Пароль</BootstrapForm.Label>
+                      <BootstrapForm.Label>{t('password')}</BootstrapForm.Label>
                       <Field
                         name="password"
                         type="password"
                         as={BootstrapForm.Control}
-                        placeholder="Введите пароль"
+                        placeholder={t('enterPassword')}
                       />
                       <ErrorMessage
                         name="password"
@@ -105,11 +105,11 @@ const LoginPage = () => {
                       disabled={isSubmitting}
                       className="w-100"
                     >
-                      Войти
+                      {t('entrance')}
                     </Button>
 
                     <div className="mt-3 text-center">
-                      <Link to="/signup">Нет аккаунта? Зарегистрироваться</Link>
+                      <Link to="/signup">{t('createAcc')}</Link>
                     </div>
                   </Form>
                 )}

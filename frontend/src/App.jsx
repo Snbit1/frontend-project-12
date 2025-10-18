@@ -8,8 +8,10 @@ import NotFoundPage from './pages/NotFoundPage'
 import RequireAuth from './components/RequireAuth'
 import { logout } from './slices/authSlice'
 import { Container, Navbar, Nav, Button } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 
 const App = () => {
+  const { t } = useTranslation()
   const isAuthenticated = useSelector((s) => s.auth.isAuthenticated)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -24,21 +26,21 @@ const App = () => {
       <Navbar bg="light" expand="lg" className="mb-4">
         <Container>
           <Navbar.Brand as={Link} to="/">
-            Hexlet Chat
+            {t('hexlet')}
           </Navbar.Brand>
           <Nav className="ms-auto">
             {!isAuthenticated ? (
               <>
                 <Nav.Link as={Link} to="/login">
-                  Войти
+                  {t('entrance')}
                 </Nav.Link>
                 <Nav.Link as={Link} to="/signup">
-                  Регистрация
+                  {t('registration')}
                 </Nav.Link>
               </>
             ) : (
               <Button variant="outline-secondary" onClick={handleLogout}>
-                Выйти
+                {t('logOut')}
               </Button>
             )}
           </Nav>

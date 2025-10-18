@@ -14,23 +14,25 @@ import {
   Alert,
   Card,
 } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 
 const SignupPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [error, setError] = useState(null)
 
   const validationSchema = Yup.object({
     username: Yup.string()
-      .min(3, 'Минимум 3 символа')
-      .max(20, 'Максимум 20 символов')
-      .required('Обязательное поле'),
+      .min(3, t('usernameMin'))
+      .max(20, t('usernameMax'))
+      .required(t('requiredField')),
     password: Yup.string()
-      .min(6, 'Минимум 6 символов')
-      .required('Обязательное поле'),
+      .min(6, t('passwordMin'))
+      .required(t('requiredField')),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), null], 'Пароли должны совпадать')
-      .required('Обязательное поле'),
+      .oneOf([Yup.ref('password'), null], t('passwordsMustMatch'))
+      .required(t('requiredField')),
   })
 
   return (
@@ -39,7 +41,7 @@ const SignupPage = () => {
         <Col md={6}>
           <Card>
             <Card.Body>
-              <h2 className="mb-4 text-center">Регистрация</h2>
+              <h2 className="mb-4 text-center">{t('registration')}</h2>
 
               {error && <Alert variant="danger">{error}</Alert>}
 
@@ -67,9 +69,9 @@ const SignupPage = () => {
                     navigate('/')
                   } catch (err) {
                     if (err.response && err.response.status === 409) {
-                      setError('Пользователь с таким именем уже существует')
+                      setError(t('userExists'))
                     } else {
-                      setError('Ошибка сети или сервера. Попробуйте позже.')
+                      setError(t('networkError'))
                     }
                   } finally {
                     setSubmitting(false)
@@ -79,14 +81,12 @@ const SignupPage = () => {
                 {({ isSubmitting }) => (
                   <Form>
                     <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>
-                        Имя пользователя
-                      </BootstrapForm.Label>
+                      <BootstrapForm.Label>{t('username')}</BootstrapForm.Label>
                       <Field
                         name="username"
                         type="text"
                         as={BootstrapForm.Control}
-                        placeholder="Введите имя пользователя"
+                        placeholder={t('enterUsername')}
                       />
                       <ErrorMessage
                         name="username"
@@ -96,12 +96,12 @@ const SignupPage = () => {
                     </BootstrapForm.Group>
 
                     <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>Пароль</BootstrapForm.Label>
+                      <BootstrapForm.Label>{t('password')}</BootstrapForm.Label>
                       <Field
                         name="password"
                         type="password"
                         as={BootstrapForm.Control}
-                        placeholder="Введите пароль"
+                        placeholder={t('enterPassword')}
                       />
                       <ErrorMessage
                         name="password"
@@ -112,13 +112,13 @@ const SignupPage = () => {
 
                     <BootstrapForm.Group className="mb-3">
                       <BootstrapForm.Label>
-                        Подтвердите пароль
+                        {t('confirmPassword')}
                       </BootstrapForm.Label>
                       <Field
                         name="confirmPassword"
                         type="password"
                         as={BootstrapForm.Control}
-                        placeholder="Повторите пароль"
+                        placeholder={t('repeatPassword')}
                       />
                       <ErrorMessage
                         name="confirmPassword"
@@ -133,11 +133,11 @@ const SignupPage = () => {
                       disabled={isSubmitting}
                       className="w-100"
                     >
-                      Зарегистрироваться
+                      {t('register')}
                     </Button>
 
                     <div className="mt-3 text-center">
-                      <Link to="/login">Уже есть аккаунт? Войти</Link>
+                      <Link to="/login">{t('alreadyHaveAcc')}</Link>
                     </div>
                   </Form>
                 )}

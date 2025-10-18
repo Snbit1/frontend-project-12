@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
+import { useTranslation } from 'react-i18next'
 
 const RenameChannelModal = ({
   show,
@@ -10,6 +11,7 @@ const RenameChannelModal = ({
   channel,
   onRename,
 }) => {
+  const { t } = useTranslation()
   const inputRef = useRef(null)
 
   useEffect(() => {
@@ -23,19 +25,19 @@ const RenameChannelModal = ({
   if (!channel) return null
   const validationSchema = Yup.object({
     name: Yup.string()
-      .min(3, 'Минимум 3 символа')
-      .max(20, 'Максимум 20 символов')
+      .min(3, t('usernameMin'))
+      .max(20, t('usernameMax'))
       .notOneOf(
         channels.map((c) => c.name).filter((n) => n !== channel.name),
-        'Такой канал уже существует'
+        t('channelExists')
       )
-      .required('Обязательное поле'),
+      .required(t('requiredField')),
   })
 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Переименовать</Modal.Title>
+        <Modal.Title>{t('rename')}</Modal.Title>
       </Modal.Header>
       <Formik
         initialValues={{ name: channel.name }}
@@ -53,7 +55,7 @@ const RenameChannelModal = ({
                 name="name"
                 innerRef={inputRef}
                 className="form-control"
-                placeholder="Новое имя канала"
+                placeholder={t('newChannelName')}
               />
               <ErrorMessage
                 name="name"
@@ -67,10 +69,10 @@ const RenameChannelModal = ({
                 onClick={handleClose}
                 disabled={isSubmitting}
               >
-                Отмена
+                {t('cancel')}
               </Button>
               <Button variant="primary" type="submit" disabled={isSubmitting}>
-                Переименовать
+                {t('rename')}
               </Button>
             </Modal.Footer>
           </Form>

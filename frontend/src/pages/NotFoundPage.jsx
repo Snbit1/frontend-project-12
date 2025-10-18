@@ -1,11 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
-const NotFoundPage = () => (
-  <div>
-    <h2>404 - страница не найдена</h2>
-    <Link to="/">Вернуться на главную</Link>
-  </div>
-)
+const NotFoundPage = () => {
+  const { t } = useTranslation()
+  return (
+    <div>
+      <h2>{t('notFound')}</h2>
+      <Link to="/">{t('returnToHome')}</Link>
+    </div>
+  )
+}
 
 export default NotFoundPage
