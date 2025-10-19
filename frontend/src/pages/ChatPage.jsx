@@ -22,6 +22,7 @@ import socket from '../socket'
 import api from '../api/axios'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
+import { cleanText } from '../utils/profanity'
 
 const ChatPage = () => {
   const { t } = useTranslation()
@@ -45,7 +46,8 @@ const ChatPage = () => {
 
   const handleAddChannel = async (name) => {
     try {
-      await api.post('/channels', { name })
+      const cleanedName = cleanText(name)
+      await api.post('/channels', { name: cleanedName })
       toast.success(t('toast.channelAdded'))
       handleCloseAddChannel()
     } catch (err) {
@@ -61,7 +63,8 @@ const ChatPage = () => {
 
   const handleRenameChannel = async (id, newName) => {
     try {
-      await api.patch(`/channels/${id}`, { name: newName })
+      const cleanedName = cleanText(newName)
+      await api.patch(`/channels/${id}`, { name: cleanedName })
       toast.success(t('toast.channelRenamed'))
       handleCloseRenameChannel()
     } catch (err) {
@@ -144,7 +147,7 @@ const ChatPage = () => {
   }, [channels, selectedChannelId])
 
   useEffect(() => {
-    if (channels.length > 0 && selectedChannelId) {
+    if (channelsStatus === 'succeeded' && selectedChannelId) {
       dispatch(fetchMessages(selectedChannelId))
     }
   }, [dispatch, channels, selectedChannelId])
@@ -187,8 +190,9 @@ const ChatPage = () => {
     if (!newMessage.trim() || !selectedChannelId) return
 
     try {
+      const cleanedMessage = cleanText(newMessage)
       await api.post('/messages', {
-        body: newMessage,
+        body: cleanedMessage,
         channelId: selectedChannelId,
         username,
       })
