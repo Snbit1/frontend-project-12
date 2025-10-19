@@ -3,9 +3,9 @@ import api from '../api/axios'
 
 export const fetchMessages = createAsyncThunk(
   'messages/fetchMessages',
-  async (_, { rejectWithValue }) => {
+  async (channelId, { rejectWithValue }) => {
     try {
-      const response = await api.get('/messages')
+      const response = await api.get(`/messages?channelId=${channelId}`)
       return response.data
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message)

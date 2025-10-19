@@ -1,16 +1,11 @@
-import React, { useEffect, useState, useTransition } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchChannels } from '../slices/channelsSlice'
-import {
-  addMessageLocal,
-  fetchMessages,
-  clearMessages,
-} from '../slices/messagesSlice'
+import { addMessageLocal, fetchMessages } from '../slices/messagesSlice'
 import {
   addChannelLocal,
   removeChannelLocal,
   renameChannelLocal,
-  clearChannels,
 } from '../slices/channelsSlice'
 import RenameChannelModal from '../components/RenameChannelModal'
 import {
@@ -26,6 +21,7 @@ import AddChannelModal from '../components/AddChannelModal'
 import socket from '../socket'
 import api from '../api/axios'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 
 const ChatPage = () => {
   const { t } = useTranslation()
@@ -35,6 +31,7 @@ const ChatPage = () => {
   const channelsStatus = useSelector((s) => s.channels.status)
   const messagesStatus = useSelector((s) => s.messages.status)
   const username = useSelector((s) => s.auth.user?.username || 'Гость')
+  const messagesError = useSelector((s) => s.messages.error)
 
   const [newMessage, setNewMessage] = useState('')
   const [selectedChannelId, setSelectedChannelId] = useState(null)
@@ -49,9 +46,11 @@ const ChatPage = () => {
   const handleAddChannel = async (name) => {
     try {
       await api.post('/channels', { name })
+      toast.success(t('toast.channelAdded'))
       handleCloseAddChannel()
     } catch (err) {
       console.error('Ошибка добавления канала', err)
+      toast.error(t('toast.errorAddChannel'))
     }
   }
 
@@ -63,9 +62,11 @@ const ChatPage = () => {
   const handleRenameChannel = async (id, newName) => {
     try {
       await api.patch(`/channels/${id}`, { name: newName })
+      toast.success(t('toast.channelRenamed'))
       handleCloseRenameChannel()
     } catch (err) {
       console.error('Ошибка переименования канала', err)
+      toast.error(t('toast.errorRenameChannel'))
     }
   }
 
@@ -81,19 +82,23 @@ const ChatPage = () => {
       if (selectedChannelId === id && channels.length > 0) {
         setSelectedChannelId(channels[0].id)
       }
+      toast.success(t('toast.channelDeleted'))
     } catch (err) {
       console.error('Ошибка удаления канала', err)
     }
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch(clearMessages())
-      dispatch(clearChannels())
-      console.log('Данные очищены')
-    }, 600000)
-    return () => clearTimeout(timer)
-  }, [dispatch])
+    if (channelsStatus === 'failed') {
+      toast.error(t('toast.errorLoadChannels'))
+    }
+  }, [channelsStatus, t])
+
+  useEffect(() => {
+    if (messagesStatus === 'failed' && messagesError && selectedChannelId) {
+      toast.error(t('toast.errorLoadMessages'))
+    }
+  }, [messagesStatus, messagesError, selectedChannelId, t])
 
   useEffect(() => {
     const handleNewMessage = (message) => {
@@ -109,10 +114,12 @@ const ChatPage = () => {
     const handleConnect = () => {
       console.log('Подключено к серверу WebSocket')
       setIsConnected(true)
+      toast.info(t('toast.online'))
     }
     const handleDisconnect = () => {
       console.log('Отключено от сервера')
       setIsConnected(false)
+      toast.warn(t('toast.offline'))
     }
     socket.on('connect', handleConnect)
     socket.on('disconnect', handleDisconnect)
@@ -121,16 +128,12 @@ const ChatPage = () => {
       socket.off('connect', handleConnect)
       socket.off('disconnect', handleDisconnect)
     }
-  }, [])
+  }, [t])
 
   useEffect(() => {
     const localChannels = JSON.parse(localStorage.getItem('channels')) || []
     if (localChannels.length === 0) {
       dispatch(fetchChannels())
-    }
-    const localMessages = JSON.parse(localStorage.getItem('messages')) || []
-    if (localMessages.length === 0) {
-      dispatch(fetchMessages())
     }
   }, [dispatch])
 
@@ -139,6 +142,12 @@ const ChatPage = () => {
       setSelectedChannelId(channels[0].id)
     }
   }, [channels, selectedChannelId])
+
+  useEffect(() => {
+    if (channels.length > 0 && selectedChannelId) {
+      dispatch(fetchMessages(selectedChannelId))
+    }
+  }, [dispatch, channels, selectedChannelId])
 
   useEffect(() => {
     const handleNewChannel = (channel) => {

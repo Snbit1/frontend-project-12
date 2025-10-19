@@ -39,6 +39,10 @@ const channelsSlice = createSlice({
       state.items = []
       localStorage.removeItem('channels')
     },
+    clearUserChannels: (state) => {
+      state.items = state.items.filter((c) => !c.removable)
+      localStorage.setItem('channels', JSON.stringify(state.items))
+    },
   },
   extraReducers: (builder) => {
     builder

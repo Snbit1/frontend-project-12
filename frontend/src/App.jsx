@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import ChatPage from './pages/ChatPage'
@@ -9,12 +9,23 @@ import RequireAuth from './components/RequireAuth'
 import { logout } from './slices/authSlice'
 import { Container, Navbar, Nav, Button } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { clearMessages } from './slices/messagesSlice'
 
 const App = () => {
   const { t } = useTranslation()
   const isAuthenticated = useSelector((s) => s.auth.isAuthenticated)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(clearMessages())
+      dispatch({ type: 'channels/clearUserChannels' })
+      console.log('Сообщения и пользовательские каналы очищены')
+    }, 600000)
+
+    return () => clearInterval(interval)
+  }, [dispatch])
 
   const handleLogout = () => {
     dispatch(logout())

@@ -33,5 +33,18 @@
   "logOut": "Выйти",
   "newChannelName": "Новое имя канала",
   "cancel": "Отмена",
-  "channelExists": "Канал с таким именем уже существует"
+  "channelExists": "Канал с таким именем уже существует",
+    "toast": {
+    "errorLoadChannels": "Ошибка загрузки каналов",
+    "errorLoadMessages": "Ошибка загрузки сообщений",
+    "offline": "Нет соединения с сервером",
+    "online": "Подключено к серверу",
+    "channelAdded": "Канал успешно создан",
+    "channelRenamed": "Канал переименован",
+    "channelDeleted": "Канал удалён"
+  },
+  "buttons": {
+    "send": "Отправить"
+  },
+  "...": "..."
 }
