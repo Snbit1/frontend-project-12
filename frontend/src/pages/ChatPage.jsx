@@ -243,6 +243,7 @@ const ChatPage = () => {
                   size="sm"
                   onClick={() => setSelectedChannelId(c.id)}
                 >
+                  <span style={{ display: 'none' }}>{c.name}</span>
                   {`# ${c.name}`}
                 </Button>
                 {isRemovable && (
