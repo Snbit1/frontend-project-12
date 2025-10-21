@@ -142,7 +142,8 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (channels.length > 0 && selectedChannelId === null) {
-      setSelectedChannelId(channels[0].id)
+      const generalChannel = channels.find((c) => c.name === 'general')
+      setSelectedChannelId(generalChannel?.id ?? channels[0].id)
     }
   }, [channels, selectedChannelId])
 
