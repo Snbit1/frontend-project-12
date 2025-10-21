@@ -9,17 +9,17 @@
   "delete": "Удалить",
   "placeholderMessage": "Введите сообщение...",
   "entrance": "Войти",
-  "incorrectUser": "Неверное имя пользователя или пароль",
-  "networkError": "Ошибка сети или сервера. Попробуйте позже.",
-  "username": "Имя пользователя",
-  "enterUsername": "Введите имя пользователя",
+  "incorrectUser": "Неверные имя пользователя или пароль",
+  "networkError": "Ошибка соединения",
+  "username": "Ваш ник",
+  "enterUsername": "Введите ник",
   "password": "Пароль",
   "enterPassword": "Введите пароль",
   "createAcc": "Нет аккаунта? Зарегистрироваться",
-  "usernameMin": "Минимум 3 символа",
-  "usernameMax": "Максимум 20 символов",
+  "usernameMin": "От 3 до 20 символов",
+  "usernameMax": "От 3 до 20 символов",
   "requiredField": "Обязательное поле",
-  "passwordMin": "Минимум 6 символов",
+  "passwordMin": "Не менее 6 символов",
   "notFound": "404 - страница не найдена",
   "returnToHome": "Вернуться на главную",
   "registration": "Регистрация",
@@ -31,20 +31,16 @@
   "passwordsMustMatch": "Пароли должны совпадать",
   "hexlet": "Hexlet Chat",
   "logOut": "Выйти",
-  "newChannelName": "Новое имя канала",
+  "newChannelName": "Имя канала",
   "cancel": "Отмена",
   "channelExists": "Канал с таким именем уже существует",
-    "toast": {
+  "toast": {
     "errorLoadChannels": "Ошибка загрузки каналов",
     "errorLoadMessages": "Ошибка загрузки сообщений",
     "offline": "Нет соединения с сервером",
     "online": "Подключено к серверу",
-    "channelAdded": "Канал успешно создан",
+    "channelAdded": "Канал создан",
     "channelRenamed": "Канал переименован",
     "channelDeleted": "Канал удалён"
-  },
-  "buttons": {
-    "send": "Отправить"
-  },
-  "...": "..."
+  }
 }
