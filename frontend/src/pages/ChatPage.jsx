@@ -238,10 +238,13 @@ const ChatPage = () => {
                   cursor: 'pointer',
                 }}
               >
-                <span onClick={() => setSelectedChannelId(c.id)}>
+                <Button
+                  variant="link"
+                  size="sm"
+                  onClick={() => setSelectedChannelId(c.id)}
+                >
                   {`# ${c.name}`}
-                </span>
-
+                </Button>
                 {isRemovable && (
                   <Dropdown as={ButtonGroup}>
                     <Dropdown.Toggle
