@@ -2,11 +2,9 @@ import { io } from 'socket.io-client'
 
 const token = localStorage.getItem('token')
 
-const socket = io('/socket.io', {
+const socket = io({
   auth: { token },
-  transports: ['websocket'],
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
+  transports: ['websocket', 'polling'],
 })
 
 socket.on('connect', () => console.log('Подключено к серверу Hexlet WebSocket'))
