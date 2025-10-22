@@ -243,7 +243,6 @@ const ChatPage = () => {
                   variant="link"
                   size="sm"
                   onClick={() => setSelectedChannelId(c.id)}
-                  aria-label={c.name}
                   style={{
                     textDecoration: 'none',
                     color: 'black',
@@ -256,7 +255,8 @@ const ChatPage = () => {
                   }}
                   className="p-0 m-0 border-0"
                 >
-                  {`# ${c.name}`}
+                  <span># </span>
+                  {c.name}
                 </Button>
                 {isRemovable && (
                   <Dropdown as={ButtonGroup}>
