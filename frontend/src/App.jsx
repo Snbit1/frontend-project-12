@@ -60,9 +60,14 @@ const App = () => {
 
       <Container>
         <Routes>
-          <Route element={<RequireAuth />}>
-            <Route path="/" element={<ChatPage />} />
-          </Route>
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <ChatPage />
+              </RequireAuth>
+            }
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="*" element={<NotFoundPage />} />
