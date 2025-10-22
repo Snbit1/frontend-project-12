@@ -70,7 +70,9 @@ const LoginPage = () => {
                 {({ isSubmitting }) => (
                   <Form>
                     <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>{t('username')}</BootstrapForm.Label>
+                      <BootstrapForm.Label>
+                        {t('enterUsername')}
+                      </BootstrapForm.Label>
                       <Field
                         name="username"
                         type="text"
@@ -109,6 +111,7 @@ const LoginPage = () => {
                     </Button>
 
                     <div className="mt-3 text-center">
+                      <span>Нет аккаунта? </span>
                       <Link to="/signup">{t('createAcc')}</Link>
                     </div>
                   </Form>

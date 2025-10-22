@@ -86,7 +86,7 @@ const SignupPage = () => {
                         name="username"
                         type="text"
                         as={BootstrapForm.Control}
-                        placeholder={t('enterUsername')}
+                        placeholder={t('username')}
                       />
                       <ErrorMessage
                         name="username"
@@ -101,7 +101,7 @@ const SignupPage = () => {
                         name="password"
                         type="password"
                         as={BootstrapForm.Control}
-                        placeholder={t('enterPassword')}
+                        placeholder={t('password')}
                       />
                       <ErrorMessage
                         name="password"
@@ -118,7 +118,7 @@ const SignupPage = () => {
                         name="confirmPassword"
                         type="password"
                         as={BootstrapForm.Control}
-                        placeholder={t('repeatPassword')}
+                        placeholder={t('confirmPassword')}
                       />
                       <ErrorMessage
                         name="confirmPassword"

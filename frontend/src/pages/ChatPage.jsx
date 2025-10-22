@@ -243,6 +243,17 @@ const ChatPage = () => {
                   variant="link"
                   size="sm"
                   onClick={() => setSelectedChannelId(c.id)}
+                  style={{
+                    textDecoration: 'none',
+                    color: 'black',
+                    border: 'none',
+                    background: 'none',
+                    padding: 0,
+                    margin: 0,
+                    outline: 'none',
+                    boxShadow: 'none',
+                  }}
+                  className="p-0 m-0 border-0"
                 >
                   <span style={{ display: 'none' }}>{c.name}</span>
                   {`# ${c.name}`}
