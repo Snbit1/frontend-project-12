@@ -255,7 +255,6 @@ const ChatPage = () => {
                   }}
                   className="p-0 m-0 border-0"
                 >
-                  <span># </span>
                   {c.name}
                 </Button>
                 {isRemovable && (
