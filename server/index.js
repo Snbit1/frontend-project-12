@@ -3,7 +3,6 @@ import { io } from 'socket.io-client'
 const token = localStorage.getItem('token')
 
 const socket = io('/socket.io', {
-  auth: { token },
   transports: ['websocket'],
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
