@@ -224,12 +224,13 @@ const ChatPage = () => {
             +
           </Button>
         </div>
-        <ListGroup>
+        <ListGroup as="ul">
           {channels.map((c, index) => {
             const isRemovable = c.removable
 
             return (
               <ListGroup.Item
+                as="li"
                 key={c.id ?? `channel-${index}`}
                 active={c.id === selectedChannelId}
                 style={{
@@ -239,19 +240,22 @@ const ChatPage = () => {
                   cursor: 'pointer',
                 }}
               >
+                <span style={{ marginRight: '5px' }}>#</span>
                 <Button
                   variant="outline-primary"
                   size="sm"
                   onClick={() => setSelectedChannelId(c.id)}
                   style={{
                     textDecoration: 'none',
-                    color: 'black',
+                    color: 'inherit',
                     border: 'none',
                     background: 'none',
                     padding: 0,
                     margin: 0,
                     outline: 'none',
                     boxShadow: 'none',
+                    width: '100%',
+                    textAlign: 'left',
                   }}
                   className="p-0 m-0 border-0"
                 >
