@@ -240,7 +240,7 @@ const ChatPage = () => {
                 }}
               >
                 <Button
-                  variant="link"
+                  variant="outline-primary"
                   size="sm"
                   onClick={() => setSelectedChannelId(c.id)}
                   style={{
