@@ -1,6 +1,10 @@
 import { io } from 'socket.io-client'
 
-const socket = io(import.meta.env.VITE_SOCKET_URL || '/')
+const socket = io('/', {
+  path: '/socket.io',
+  transports: ['websocket'],
+})
+
 socket.on('connect_error', (err) => {
   console.error('Ошибка подключения к сокету:', err)
 })
