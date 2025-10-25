@@ -141,11 +141,15 @@ const ChatPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (channels.length > 0 && selectedChannelId === null) {
+    if (
+      channelsStatus === 'succeeded' &&
+      channels.length > 0 &&
+      selectedChannelId === null
+    ) {
       const generalChannel = channels.find((c) => c.name === 'general')
       setSelectedChannelId(generalChannel?.id ?? channels[0].id)
     }
-  }, [channels, selectedChannelId])
+  }, [channels, selectedChannelId, channelsStatus])
 
   useEffect(() => {
     if (channelsStatus === 'succeeded' && selectedChannelId) {
