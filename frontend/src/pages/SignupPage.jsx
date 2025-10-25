@@ -15,6 +15,7 @@ import {
   Card,
 } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { fetchChannels } from '../slices/channelsSlice'
 
 const SignupPage = () => {
   const { t } = useTranslation()
@@ -66,6 +67,7 @@ const SignupPage = () => {
                         user: { username: values.username },
                       })
                     )
+                    await dispatch(fetchChannels()).unwrap()
                     navigate('/')
                   } catch (err) {
                     if (err.response && err.response.status === 409) {
