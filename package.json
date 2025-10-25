@@ -22,9 +22,7 @@
   },
   "homepage": "https://github.com/Snbit1/frontend-project-12#readme",
   "dependencies": {
-    "@hexlet/chat-server": "^2.0.4",
-    "express": "^5.1.0",
-    "socket.io": "^4.8.1"
+    "@hexlet/chat-server": "^2.0.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1"

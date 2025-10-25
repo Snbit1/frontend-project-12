@@ -242,6 +242,7 @@ const ChatPage = () => {
               >
                 <span style={{ marginRight: '5px' }}>#</span>
                 <Button
+                  role="button"
                   variant="outline-primary"
                   size="sm"
                   onClick={() => setSelectedChannelId(c.id)}
