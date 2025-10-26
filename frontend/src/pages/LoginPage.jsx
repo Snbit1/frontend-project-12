@@ -69,16 +69,17 @@ const LoginPage = () => {
               >
                 {({ isSubmitting }) => (
                   <Form>
-                    <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>
-                        {t('enterUsername')}
-                      </BootstrapForm.Label>
+                    <BootstrapForm.Group className="form-floating mb-3">
                       <Field
+                        id="username"
                         name="username"
                         type="text"
                         as={BootstrapForm.Control}
-                        placeholder={t('enterUsername')}
+                        placeholder={t('username2')}
                       />
+                      <BootstrapForm.Label htmlFor="username">
+                        {t('username2')}
+                      </BootstrapForm.Label>
                       <ErrorMessage
                         name="username"
                         component="div"
@@ -86,14 +87,17 @@ const LoginPage = () => {
                       />
                     </BootstrapForm.Group>
 
-                    <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>{t('password')}</BootstrapForm.Label>
+                    <BootstrapForm.Group className="form-floating mb-3">
                       <Field
+                        id="password"
                         name="password"
                         type="password"
                         as={BootstrapForm.Control}
                         placeholder={t('enterPassword')}
                       />
+                      <BootstrapForm.Label htmlFor="password">
+                        {t('password')}
+                      </BootstrapForm.Label>
                       <ErrorMessage
                         name="password"
                         component="div"

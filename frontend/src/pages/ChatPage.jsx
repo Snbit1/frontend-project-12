@@ -18,6 +18,7 @@ import {
   ButtonGroup,
 } from 'react-bootstrap'
 import AddChannelModal from '../components/AddChannelModal'
+import ConfirmDeleteChannelModal from '../components/ConfirmDeleteChannelModal'
 import socket from '../socket'
 import api from '../api/axios'
 import { useTranslation } from 'react-i18next'
@@ -40,6 +41,8 @@ const ChatPage = () => {
   const [showAddChannelModal, setShowAddChannelModal] = useState(false)
   const [showRenameModal, setShowRenameModal] = useState(false)
   const [channelToRename, setChannelToRename] = useState(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [channelToDelete, setChannelToDelete] = useState(null)
 
   const handleOpenAddChannel = () => setShowAddChannelModal(true)
   const handleCloseAddChannel = () => setShowAddChannelModal(false)
@@ -88,6 +91,41 @@ const ChatPage = () => {
       toast.success(t('toast.channelDeleted'))
     } catch (err) {
       console.error('Ошибка удаления канала', err)
+    }
+  }
+
+  const handleOpenDeleteChannel = (channel) => {
+    setChannelToDelete(channel)
+    setShowDeleteModal(true)
+  }
+
+  const handleCloseDeleteChannel = () => {
+    setChannelToDelete(null)
+    setShowDeleteModal(false)
+  }
+
+  const handleConfirmDeleteChannel = async () => {
+    if (!channelToDelete) return
+    await handleDeleteChannel(channelToDelete.id)
+    handleCloseDeleteChannel()
+  }
+
+  const formatMessagesCount = (count) => {
+    if (count === 0) {
+      return t('noMessages')
+    }
+    if (count % 100 >= 11 && count % 100 <= 14) {
+      return t('manyMessages', { count })
+    }
+    switch (count % 10) {
+      case 1:
+        return t('oneMessage')
+      case 2:
+      case 3:
+      case 4:
+        return t('fewMessages', { count })
+      default:
+        return t('manyMessages', { count })
     }
   }
 
@@ -141,15 +179,11 @@ const ChatPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (
-      channelsStatus === 'succeeded' &&
-      channels.length > 0 &&
-      selectedChannelId === null
-    ) {
+    if (channelsStatus === 'succeeded' && channels.length > 0) {
       const generalChannel = channels.find((c) => c.name === 'general')
       setSelectedChannelId(generalChannel?.id ?? channels[0].id)
     }
-  }, [channels, selectedChannelId, channelsStatus])
+  }, [channels, channelsStatus])
 
   useEffect(() => {
     if (channelsStatus === 'succeeded' && selectedChannelId) {
@@ -210,6 +244,7 @@ const ChatPage = () => {
   const filteredMessages = messages.filter(
     (m) => m.channelId === selectedChannelId
   )
+  const selectedChannel = channels.find((c) => c.id === selectedChannelId)
 
   if (channelsStatus === 'loading' || messagesStatus === 'loading') {
     return <p>Загрузка...</p>
@@ -228,7 +263,7 @@ const ChatPage = () => {
             +
           </Button>
         </div>
-        <ListGroup as="ul">
+        <ListGroup as="ul" style={{ marginTop: '0.5rem' }}>
           {channels.map((c, index) => {
             const isRemovable = c.removable
 
@@ -242,14 +277,16 @@ const ChatPage = () => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   cursor: 'pointer',
+                  padding: '0 1rem',
+                  height: '2.5rem',
+                  boxSizing: 'border-box',
                 }}
+                onClick={() => setSelectedChannelId(c.id)}
               >
-                <span style={{ marginRight: '5px' }}>#</span>
                 <Button
                   role="button"
-                  variant="outline-primary"
+                  variant={c.id === selectedChannelId ? 'primary' : 'light'}
                   size="sm"
-                  onClick={() => setSelectedChannelId(c.id)}
                   style={{
                     textDecoration: 'none',
                     color: 'inherit',
@@ -261,24 +298,45 @@ const ChatPage = () => {
                     boxShadow: 'none',
                     width: '100%',
                     textAlign: 'left',
+                    boxSizing: 'border-box',
                   }}
                   className="p-0 m-0 border-0"
                 >
+                  <span style={{ marginRight: '5px' }}>#</span>
                   {c.name}
                 </Button>
                 {isRemovable && (
-                  <Dropdown as={ButtonGroup}>
+                  <Dropdown
+                    as={ButtonGroup}
+                    onClick={(e) => e.stopPropagation()}
+                    align="end"
+                  >
                     <Dropdown.Toggle
                       split
-                      variant="secondary"
+                      as="button"
+                      variant="outline-primary"
                       id={`dropdown-${c.id}`}
+                      style={{
+                        background: 'transparent',
+                        padding: '0 0.25rem',
+                        height: '1.75rem',
+                        minHeight: '0',
+                        color: 'black',
+                        border: 'none',
+                      }}
                     />
                     <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => handleOpenRenameChannel(c)}>
-                        {t('rename')}
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleDeleteChannel(c.id)}>
+                      <Dropdown.Item
+                        as="button"
+                        onClick={() => handleOpenDeleteChannel(c)}
+                      >
                         {t('delete')}
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        as="button"
+                        onClick={() => handleOpenRenameChannel(c)}
+                      >
+                        {t('rename')}
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
@@ -290,17 +348,17 @@ const ChatPage = () => {
       </Col>
 
       <Col md={9}>
-        <h5>
-          {t('messages')}{' '}
-          <span
-            style={{
-              fontSize: '0.8em',
-              color: isConnected ? 'green' : 'red',
-            }}
+        <div className="d-flex flex-column mb-2">
+          <div className="fw-bold"># {selectedChannel?.name}</div>
+          <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
+            {formatMessagesCount(filteredMessages.length)}
+          </div>
+          <div
+            style={{ fontSize: '0.8em', color: isConnected ? 'green' : 'red' }}
           >
             {isConnected ? t('online') : t('offline')}
-          </span>
-        </h5>
+          </div>
+        </div>
         <div
           style={{
             height: '400px',
@@ -344,6 +402,11 @@ const ChatPage = () => {
         channels={channels}
         channel={channelToRename}
         onRename={handleRenameChannel}
+      />
+      <ConfirmDeleteChannelModal
+        show={showDeleteModal}
+        handleClose={handleCloseDeleteChannel}
+        onConfirm={handleConfirmDeleteChannel}
       />
     </Row>
   )

@@ -37,7 +37,7 @@ const RenameChannelModal = ({
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{t('rename')}</Modal.Title>
+        <Modal.Title>{t('renameChannel')}</Modal.Title>
       </Modal.Header>
       <Formik
         initialValues={{ name: channel.name }}
@@ -72,7 +72,7 @@ const RenameChannelModal = ({
                 {t('cancel')}
               </Button>
               <Button variant="primary" type="submit" disabled={isSubmitting}>
-                {t('rename')}
+                {t('send')}
               </Button>
             </Modal.Footer>
           </Form>

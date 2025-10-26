@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
+import { useTranslation } from 'react-i18next'
 
 const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
   const inputRef = useRef(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (show && inputRef.current) {
@@ -26,7 +28,7 @@ const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Добавить канал</Modal.Title>
+        <Modal.Title>{t('addChannelModal')}</Modal.Title>
       </Modal.Header>
       <Formik
         initialValues={{ name: '' }}
@@ -58,10 +60,10 @@ const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
                 onClick={handleClose}
                 disabled={isSubmitting}
               >
-                Отмена
+                {t('cancel')}
               </Button>
               <Button variant="primary" type="submit" disabled={isSubmitting}>
-                Добавить
+                {t('send')}
               </Button>
             </Modal.Footer>
           </Form>

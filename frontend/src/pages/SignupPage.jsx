@@ -82,9 +82,9 @@ const SignupPage = () => {
               >
                 {({ isSubmitting }) => (
                   <Form>
-                    <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>{t('username')}</BootstrapForm.Label>
+                    <BootstrapForm.Group className="form-floating mb-3">
                       <Field
+                        id="username"
                         name="username"
                         type="text"
                         as={BootstrapForm.Control}
@@ -95,16 +95,22 @@ const SignupPage = () => {
                         component="div"
                         className="text-danger small mt-1"
                       />
+                      <BootstrapForm.Label htmlFor="username">
+                        {t('username')}
+                      </BootstrapForm.Label>
                     </BootstrapForm.Group>
 
-                    <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>{t('password')}</BootstrapForm.Label>
+                    <BootstrapForm.Group className="form-floating mb-3">
                       <Field
+                        id="password"
                         name="password"
                         type="password"
                         as={BootstrapForm.Control}
                         placeholder={t('password')}
                       />
+                      <BootstrapForm.Label htmlFor="password">
+                        {t('password')}
+                      </BootstrapForm.Label>
                       <ErrorMessage
                         name="password"
                         component="div"
@@ -112,16 +118,17 @@ const SignupPage = () => {
                       />
                     </BootstrapForm.Group>
 
-                    <BootstrapForm.Group className="mb-3">
-                      <BootstrapForm.Label>
-                        {t('confirmPassword')}
-                      </BootstrapForm.Label>
+                    <BootstrapForm.Group className="form-floating mb-3">
                       <Field
+                        id="confirmPassword"
                         name="confirmPassword"
                         type="password"
                         as={BootstrapForm.Control}
                         placeholder={t('confirmPassword')}
                       />
+                      <BootstrapForm.Label htmlFor="confirmPassword">
+                        {t('confirmPassword')}
+                      </BootstrapForm.Label>
                       <ErrorMessage
                         name="confirmPassword"
                         component="div"
@@ -137,10 +144,6 @@ const SignupPage = () => {
                     >
                       {t('register')}
                     </Button>
-
-                    <div className="mt-3 text-center">
-                      <Link to="/login">{t('alreadyHaveAcc')}</Link>
-                    </div>
                   </Form>
                 )}
               </Formik>
