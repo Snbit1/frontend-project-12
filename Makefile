@@ -12,3 +12,6 @@ start:
 
 dev:
 	cd frontend && npm run dev
+
+backend:
+	npx start-server

@@ -7,12 +7,12 @@ export default defineConfig({
     port: 5002,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5001',
+        target: 'http://localhost:5001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
       },
       '/socket.io': {
-        target: 'ws://127.0.0.1:5001',
+        target: 'ws://localhost:5001',
         ws: true,
         changeOrigin: true,
         rewriteWsOrigin: true,
