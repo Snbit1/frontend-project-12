@@ -13,7 +13,7 @@ const newUser = {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://127.0.0.1:5002')
+  await page.goto('http://localhost:5002/')
   await page.waitForTimeout(300)
 
   await page.locator('text=Hexlet Chat').first().click()
