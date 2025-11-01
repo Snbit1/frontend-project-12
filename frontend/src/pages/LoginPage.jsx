@@ -110,7 +110,7 @@ const LoginPage = () => {
                     </Button>
 
                     <div className="mt-3 text-center">
-                      <span>Нет аккаунта? </span>
+                      <span>{t('haveNoAcc')}</span>
                       <Link to="/signup">{t('createAcc')}</Link>
                     </div>
                   </Form>

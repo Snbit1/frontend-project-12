@@ -42,6 +42,7 @@
   "deleteChannel": "Удалить канал",
   "confirmDeleteChannel": "Уверены?",
   "addChannelModal": "Добавить канал",
+  "haveNoAcc": "Нет аккаунта? ",
   "toast": {
     "errorLoadChannels": "Ошибка загрузки каналов",
     "errorLoadMessages": "Ошибка загрузки сообщений",
