@@ -51,7 +51,9 @@ const ChatPage = () => {
   const handleAddChannel = async (name) => {
     try {
       const cleanedName = cleanText(name)
-      await api.post('/channels', { name: cleanedName })
+      const response = await api.post('/channels', { name: cleanedName })
+      const newChannel = response.data
+      setSelectedChannelId(newChannel.id)
       toast.success(t('toast.channelAdded'))
       handleCloseAddChannel()
     } catch (err) {
@@ -194,9 +196,10 @@ const ChatPage = () => {
 
   useEffect(() => {
     const handleNewChannel = (channel) => {
-      console.log('Получен новый канал от сервера:', channel)
-      dispatch(addChannelLocal({ ...channel, removable: true }))
-      setSelectedChannelId(channel.id)
+      if (!channels.some((c) => c.id === channel.id)) {
+        console.log('Получен новый канал от сервера:', channel)
+        dispatch(addChannelLocal({ ...channel, removable: true }))
+      }
     }
     socket.on('newChannel', handleNewChannel)
     return () => {
