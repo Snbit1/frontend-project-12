@@ -47,6 +47,7 @@ const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
                 innerRef={inputRef}
                 className="form-control"
                 aria-label="Имя канала"
+                placeholder="Имя канала"
               />
               <ErrorMessage
                 name="name"
