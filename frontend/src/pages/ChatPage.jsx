@@ -327,6 +327,9 @@ const ChatPage = () => {
                       }}
                     />
                     <Dropdown.Menu>
+                      <span className="visually-hidden">
+                        Управление каналом
+                      </span>
                       <Dropdown.Item
                         as="button"
                         onClick={() => handleOpenDeleteChannel(c)}

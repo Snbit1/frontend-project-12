@@ -51,7 +51,6 @@ const RenameChannelModal = ({
         {({ isSubmitting }) => (
           <Form>
             <Modal.Body>
-              <label className="visually-hidden">Имя канала</label>
               <Field
                 name="name"
                 innerRef={inputRef}
@@ -59,6 +58,7 @@ const RenameChannelModal = ({
                 placeholder={t('newChannelName')}
                 aria-label="Имя канала"
               />
+              <label className="visually-hidden">Имя канала</label>
               <ErrorMessage
                 name="name"
                 component="div"
