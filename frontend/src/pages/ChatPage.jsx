@@ -17,6 +17,7 @@ import {
   Dropdown,
   ButtonGroup,
 } from 'react-bootstrap'
+import { ArrowRightSquare } from 'react-bootstrap-icons'
 import AddChannelModal from '../components/AddChannelModal'
 import ConfirmDeleteChannelModal from '../components/ConfirmDeleteChannelModal'
 import socket from '../socket'
@@ -377,17 +378,24 @@ const ChatPage = () => {
         </div>
 
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
+          <div className="d-flex align-items-center">
             <Form.Control
               type="text"
               placeholder={t('placeholderMessage')}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
+              aria-label="Новое сообщение"
+              className="me-2"
             />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            {t('send')}
-          </Button>
+            <Button
+              variant="outline-secondary"
+              type="submit"
+              aria-label={t('send')}
+              className="d-flex align-items-center justify-content-center"
+            >
+              <ArrowRightSquare size={20} />
+            </Button>
+          </div>
         </Form>
       </Col>
       <AddChannelModal
