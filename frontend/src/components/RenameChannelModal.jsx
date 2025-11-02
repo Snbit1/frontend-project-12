@@ -51,11 +51,13 @@ const RenameChannelModal = ({
         {({ isSubmitting }) => (
           <Form>
             <Modal.Body>
+              <label className="visually-hidden">Имя канала</label>
               <Field
                 name="name"
                 innerRef={inputRef}
                 className="form-control"
                 placeholder={t('newChannelName')}
+                aria-label="Имя канала"
               />
               <ErrorMessage
                 name="name"
