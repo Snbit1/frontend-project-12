@@ -16,13 +16,13 @@ const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .min(3, 'Минимум 3 символа')
-      .max(20, 'Максимум 20 символов')
+      .min(3, t('usernameMin'))
+      .max(20, t('usernameMax'))
       .notOneOf(
         channels.map((c) => c.name),
-        'Такой канал уже существует'
+        t('channelExists')
       )
-      .required('Обязательное поле'),
+      .required(t('requiredField')),
   })
 
   return (
@@ -42,12 +42,12 @@ const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
         {({ isSubmitting }) => (
           <Form>
             <Modal.Body>
+              <label className="visually-hidden">Имя канала</label>
               <Field
                 name="name"
                 innerRef={inputRef}
                 className="form-control"
                 aria-label="Имя канала"
-                placeholder="Имя канала"
               />
               <ErrorMessage
                 name="name"
