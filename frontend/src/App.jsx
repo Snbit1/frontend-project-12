@@ -40,20 +40,23 @@ const App = () => {
             {t('hexlet')}
           </Navbar.Brand>
           <Nav className="ms-auto">
-            {!isAuthenticated ? (
-              <>
-                <Nav.Link as={Link} to="/login">
-                  {t('entrance')}
-                </Nav.Link>
-                <Nav.Link as={Link} to="/signup">
-                  {t('registration')}
-                </Nav.Link>
-              </>
-            ) : (
-              <Button variant="outline-secondary" onClick={handleLogout}>
-                {t('logOut')}
-              </Button>
-            )}
+            {!isAuthenticated
+              ? (
+                <>
+                  <Nav.Link as={Link} to="/login">
+                    {t('entrance')}
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/signup">
+                    {t('registration')}
+                  </Nav.Link>
+                </>
+              )
+              : (
+                <Button variant="outline-secondary" onClick={handleLogout}>
+                  {t('logOut')}
+                </Button>
+              )
+            }
           </Nav>
         </Container>
       </Navbar>
