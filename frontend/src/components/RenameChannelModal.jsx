@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react'
+/* eslint-disable prettier/prettier */
+import { useEffect, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
@@ -28,8 +29,8 @@ const RenameChannelModal = ({
       .min(3, t('usernameMin'))
       .max(20, t('usernameMax'))
       .notOneOf(
-        channels.map((c) => c.name).filter((n) => n !== channel.name),
-        t('channelExists')
+        channels.map(c => c.name).filter(n => n !== channel.name),
+        t('channelExists'),
       )
       .required(t('requiredField')),
   })

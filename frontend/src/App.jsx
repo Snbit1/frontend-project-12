@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+/* eslint-disable prettier/prettier */
+import { useEffect } from 'react'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import ChatPage from './pages/ChatPage'
@@ -13,7 +14,7 @@ import { clearMessages } from './slices/messagesSlice'
 
 const App = () => {
   const { t } = useTranslation()
-  const isAuthenticated = useSelector((s) => s.auth.isAuthenticated)
+  const isAuthenticated = useSelector(s => s.auth.isAuthenticated)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -40,7 +41,8 @@ const App = () => {
             {t('hexlet')}
           </Navbar.Brand>
           <Nav className="ms-auto">
-            {!isAuthenticated ? (
+            {!isAuthenticated 
+              ? (
               <>
                 <Nav.Link as={Link} to="/login">
                   {t('entrance')}
@@ -62,11 +64,11 @@ const App = () => {
         <Routes>
           <Route
             path="/"
-            element={
+            element={(
               <RequireAuth>
                 <ChatPage />
               </RequireAuth>
-            }
+            )}
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />

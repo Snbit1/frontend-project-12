@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { useNavigate, Link } from 'react-router-dom'
@@ -48,16 +48,19 @@ const LoginPage = () => {
                       loginSuccess({
                         token: response.data.token,
                         user: { username: values.username },
-                      })
+                      }),
                     )
                     navigate('/')
-                  } catch (err) {
+                  }
+                  catch (err) {
                     if (err.response && err.response.status === 401) {
                       setError(t('incorrectUser'))
-                    } else {
+                    }
+                    else {
                       setError(t('networkError'))
                     }
-                  } finally {
+                  }
+                  finally {
                     setSubmitting(false)
                   }
                 }}

@@ -7,10 +7,11 @@ export const fetchChannels = createAsyncThunk(
     try {
       const response = await api.get('/channels')
       return response.data
-    } catch (err) {
+    }
+    catch (err) {
       return rejectWithValue(err.response?.data || err.message)
     }
-  }
+  },
 )
 
 const channelsSlice = createSlice({
@@ -26,12 +27,12 @@ const channelsSlice = createSlice({
       localStorage.setItem('channels', JSON.stringify(state.items))
     },
     removeChannelLocal(state, action) {
-      state.items = state.items.filter((c) => c.id !== action.payload)
+      state.items = state.items.filter(c => c.id !== action.payload)
       localStorage.setItem('channels', JSON.stringify(state.items))
     },
     renameChannelLocal(state, action) {
       const { id, name } = action.payload
-      const ch = state.items.find((c) => c.id === id)
+      const ch = state.items.find(c => c.id === id)
       if (ch) ch.name = name
       localStorage.setItem('channels', JSON.stringify(state.items))
     },
@@ -40,7 +41,7 @@ const channelsSlice = createSlice({
       localStorage.removeItem('channels')
     },
     clearUserChannels: (state) => {
-      state.items = state.items.filter((c) => !c.removable)
+      state.items = state.items.filter(c => !c.removable)
       localStorage.setItem('channels', JSON.stringify(state.items))
     },
   },

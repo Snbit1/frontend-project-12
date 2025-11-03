@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import api from '../api/axios'
 import { loginSuccess } from '../slices/authSlice'
@@ -65,17 +65,20 @@ const SignupPage = () => {
                       loginSuccess({
                         token: response.data.token,
                         user: { username: values.username },
-                      })
+                      }),
                     )
                     await dispatch(fetchChannels()).unwrap()
                     navigate('/')
-                  } catch (err) {
+                  }
+                  catch (err) {
                     if (err.response && err.response.status === 409) {
                       setError(t('userExists'))
-                    } else {
+                    }
+                    else {
                       setError(t('networkError'))
                     }
-                  } finally {
+                  }
+                  finally {
                     setSubmitting(false)
                   }
                 }}

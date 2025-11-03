@@ -7,10 +7,11 @@ export const fetchMessages = createAsyncThunk(
     try {
       const response = await api.get(`/messages?channelId=${channelId}`)
       return response.data
-    } catch (err) {
+    }
+    catch (err) {
       return rejectWithValue(err.response?.data || err.message)
     }
-  }
+  },
 )
 
 const messagesSlice = createSlice({
@@ -27,12 +28,12 @@ const messagesSlice = createSlice({
     },
     editMessageLocal(state, action) {
       const { id, body } = action.payload
-      const m = state.items.find((x) => x.id === id)
+      const m = state.items.find(x => x.id === id)
       if (m) m.body = body
       localStorage.setItem('messages', JSON.stringify(state.items))
     },
     removeMessageLocal(state, action) {
-      state.items = state.items.filter((m) => m.id !== action.payload)
+      state.items = state.items.filter(m => m.id !== action.payload)
       localStorage.setItem('messages', JSON.stringify(state.items))
     },
     clearMessages(state) {

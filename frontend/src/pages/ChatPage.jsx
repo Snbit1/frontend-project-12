@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchChannels } from '../slices/channelsSlice'
 import { addMessageLocal, fetchMessages } from '../slices/messagesSlice'
@@ -29,12 +29,12 @@ import { cleanText } from '../utils/profanity'
 const ChatPage = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const channels = useSelector((s) => s.channels.items)
-  const messages = useSelector((s) => s.messages.items)
-  const channelsStatus = useSelector((s) => s.channels.status)
-  const messagesStatus = useSelector((s) => s.messages.status)
-  const username = useSelector((s) => s.auth.user?.username || 'Гость')
-  const messagesError = useSelector((s) => s.messages.error)
+  const channels = useSelector(s => s.channels.items)
+  const messages = useSelector(s => s.messages.items)
+  const channelsStatus = useSelector(s => s.channels.status)
+  const messagesStatus = useSelector(s => s.messages.status)
+  const username = useSelector(s => s.auth.user?.username || 'Гость')
+  const messagesError = useSelector(s => s.messages.error)
 
   const [newMessage, setNewMessage] = useState('')
   const [selectedChannelId, setSelectedChannelId] = useState(null)
@@ -56,7 +56,8 @@ const ChatPage = () => {
       setSelectedChannelId(newChannel.id)
       toast.success(t('toast.channelAdded'))
       handleCloseAddChannel()
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Ошибка добавления канала', err)
       toast.error(t('toast.errorAddChannel'))
     }
@@ -73,7 +74,8 @@ const ChatPage = () => {
       await api.patch(`/channels/${id}`, { name: cleanedName })
       toast.success(t('toast.channelRenamed'))
       handleCloseRenameChannel()
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Ошибка переименования канала', err)
       toast.error(t('toast.errorRenameChannel'))
     }
@@ -92,7 +94,8 @@ const ChatPage = () => {
         setSelectedChannelId(channels[0].id)
       }
       toast.success(t('toast.channelDeleted'))
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Ошибка удаления канала', err)
     }
   }
@@ -183,7 +186,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (channelsStatus === 'succeeded' && channels.length > 0) {
-      const generalChannel = channels.find((c) => c.name === 'general')
+      const generalChannel = channels.find(c => c.name === 'general')
       setSelectedChannelId(generalChannel?.id ?? channels[0].id)
     }
   }, [channels, channelsStatus])
@@ -196,7 +199,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     const handleNewChannel = (channel) => {
-      if (!channels.some((c) => c.id === channel.id)) {
+      if (!channels.some(c => c.id === channel.id)) {
         console.log('Получен новый канал от сервера:', channel)
         dispatch(addChannelLocal({ ...channel, removable: true }))
       }
@@ -240,15 +243,16 @@ const ChatPage = () => {
         username,
       })
       setNewMessage('')
-    } catch (err) {
+    }
+    catch (err) {
       console.error('Ошибка отправки сообщения', err)
     }
   }
 
   const filteredMessages = messages.filter(
-    (m) => m.channelId === selectedChannelId
+    m => m.channelId === selectedChannelId
   )
-  const selectedChannel = channels.find((c) => c.id === selectedChannelId)
+  const selectedChannel = channels.find(c => c.id === selectedChannelId)
 
   if (channelsStatus === 'loading' || messagesStatus === 'loading') {
     return <p>Загрузка...</p>
@@ -312,7 +316,7 @@ const ChatPage = () => {
                 {isRemovable && (
                   <Dropdown
                     as={ButtonGroup}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={e => e.stopPropagation()}
                     align="end"
                   >
                     <Dropdown.Toggle
@@ -357,7 +361,10 @@ const ChatPage = () => {
 
       <Col md={9}>
         <div className="d-flex flex-column mb-2">
-          <div className="fw-bold"># {selectedChannel?.name}</div>
+          <div className="fw-bold">
+            # 
+            {selectedChannel?.name}
+          </div>
           <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
             {formatMessagesCount(filteredMessages.length)}
           </div>
@@ -378,7 +385,10 @@ const ChatPage = () => {
         >
           {filteredMessages.map((m, index) => (
             <div key={m.id ?? `msg-${index}`}>
-              <strong>{m.username}: </strong>
+              <strong>
+                {m.username}
+                : 
+              </strong>
               <span>{m.body}</span>
             </div>
           ))}
@@ -390,7 +400,7 @@ const ChatPage = () => {
               type="text"
               placeholder={t('placeholderMessage')}
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={e => setNewMessage(e.target.value)}
               aria-label="Новое сообщение"
               className="me-2"
             />
