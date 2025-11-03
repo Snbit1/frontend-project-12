@@ -42,21 +42,20 @@ const App = () => {
           <Nav className="ms-auto">
             {!isAuthenticated
               ? (
-                <>
-                  <Nav.Link as={Link} to="/login">
-                    {t('entrance')}
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/signup">
-                    {t('registration')}
-                  </Nav.Link>
-                </>
-              )
+                  <>
+                    <Nav.Link as={Link} to="/login">
+                      {t('entrance')}
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/signup">
+                      {t('registration')}
+                    </Nav.Link>
+                  </>
+                )
               : (
-                <Button variant="outline-secondary" onClick={handleLogout}>
-                  {t('logOut')}
-                </Button>
-              )
-            }
+                  <Button variant="outline-secondary" onClick={handleLogout}>
+                    {t('logOut')}
+                  </Button>
+                )}
           </Nav>
         </Container>
       </Navbar>
