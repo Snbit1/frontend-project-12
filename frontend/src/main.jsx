@@ -21,6 +21,17 @@ const rollbarConfig = {
   captureUnhandledRejections: true,
 }
 
+const toastProps = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  newestOnTop: true,
+  closeOnClick: true,
+  pauseOnFocusLoss: true,
+  draggable: true,
+  pauseOnHover: true,
+}
+
 const root = createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
@@ -29,16 +40,7 @@ root.render(
         <Provider store={store}>
           <BrowserRouter>
             <App />
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop
-              closeOnClick
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
+            <ToastContainer {...toastProps} />
           </BrowserRouter>
         </Provider>
       </ErrorBoundary>
