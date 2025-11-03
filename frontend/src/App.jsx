@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect } from 'react'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
@@ -41,21 +40,21 @@ const App = () => {
             {t('hexlet')}
           </Navbar.Brand>
           <Nav className="ms-auto">
-            {!isAuthenticated 
+            {!isAuthenticated
               ? (
-              <>
-                <Nav.Link as={Link} to="/login">
-                  {t('entrance')}
-                </Nav.Link>
-                <Nav.Link as={Link} to="/signup">
-                  {t('registration')}
-                </Nav.Link>
-              </>
-            ) : (
-              <Button variant="outline-secondary" onClick={handleLogout}>
-                {t('logOut')}
-              </Button>
-            )}
+                  <>
+                    <Nav.Link as={Link} to="/login">
+                      {t('entrance')}
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/signup">
+                      {t('registration')}
+                    </Nav.Link>
+                  </>
+                ) : (
+                  <Button variant="outline-secondary" onClick={handleLogout}>
+                    {t('logOut')}
+                  </Button>
+                )}
           </Nav>
         </Container>
       </Navbar>

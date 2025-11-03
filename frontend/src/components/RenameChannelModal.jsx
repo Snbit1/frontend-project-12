@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { Formik, Form, Field, ErrorMessage } from 'formik'

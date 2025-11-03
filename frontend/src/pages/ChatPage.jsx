@@ -250,7 +250,7 @@ const ChatPage = () => {
   }
 
   const filteredMessages = messages.filter(
-    m => m.channelId === selectedChannelId
+    m => m.channelId === selectedChannelId,
   )
   const selectedChannel = channels.find(c => c.id === selectedChannelId)
 
@@ -362,7 +362,7 @@ const ChatPage = () => {
       <Col md={9}>
         <div className="d-flex flex-column mb-2">
           <div className="fw-bold">
-            # 
+            <span style={{ marginRight: '0.25rem' }}>#</span>
             {selectedChannel?.name}
           </div>
           <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>
@@ -385,9 +385,9 @@ const ChatPage = () => {
         >
           {filteredMessages.map((m, index) => (
             <div key={m.id ?? `msg-${index}`}>
-              <strong>
+              <strong style={{ marginRight: '0.25rem' }}>
                 {m.username}
-                : 
+                :
               </strong>
               <span>{m.body}</span>
             </div>
