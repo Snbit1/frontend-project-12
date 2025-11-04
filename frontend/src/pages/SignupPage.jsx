@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import api from '../api/axios'
-import { loginSuccess } from '../slices/authSlice'
+import { loginSuccess } from '../store/slices/authSlice'
 import {
   Container,
   Row,
@@ -15,7 +14,8 @@ import {
   Card,
 } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { fetchChannels } from '../slices/channelsSlice'
+import { fetchChannels } from '../store/slices/channelsSlice'
+import { signupSchema } from '../validation/schemas'
 
 const SignupPage = () => {
   const { t } = useTranslation()
@@ -23,18 +23,7 @@ const SignupPage = () => {
   const dispatch = useDispatch()
   const [error, setError] = useState(null)
 
-  const validationSchema = Yup.object({
-    username: Yup.string()
-      .min(3, t('usernameMin'))
-      .max(20, t('usernameMax'))
-      .required(t('requiredField')),
-    password: Yup.string()
-      .min(6, t('passwordMin'))
-      .required(t('requiredField')),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), null], t('passwordsMustMatch'))
-      .required(t('requiredField')),
-  })
+  const validationSchema = signupSchema(t)
 
   return (
     <Container className="mt-5">

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { Provider } from 'react-redux'
-import store from './store'
+import store from './store/store'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './i18n'
 import 'react-toastify/dist/ReactToastify.css'
@@ -14,8 +14,7 @@ import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react'
 initProfanity()
 
 const rollbarConfig = {
-  accessToken:
-    '7885b65ccf2141829a88107fccd9221e5e3131514146b3a1227b60962fbed63336adb0f6ec631ab85c816dd810c8b755',
+  accessToken: import.meta.env.VITE_ROLLBAR_TOKEN,
   environment: 'development',
   captureUncaught: true,
   captureUnhandledRejections: true,

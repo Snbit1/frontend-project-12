@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
+import api from '../api/axios'
+import { toast } from 'react-toastify'
+import { cleanText } from '../utils/profanity'
+import { channelNameSchema } from '../validation/schemas'
 
-const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
+const AddChannelModal = ({ show, handleClose, channels, setSelectedChannelId }) => {
   const inputRef = useRef(null)
   const { t } = useTranslation()
 
@@ -14,16 +17,25 @@ const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
     }
   }, [show])
 
-  const validationSchema = Yup.object({
-    name: Yup.string()
-      .min(3, t('usernameMin'))
-      .max(20, t('usernameMax'))
-      .notOneOf(
-        channels.map(c => c.name),
-        t('channelExists'),
-      )
-      .required(t('requiredField')),
-  })
+  const validationSchema = channelNameSchema(t, channels.map(c => c.name))
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const cleanedName = cleanText(values.name)
+      const response = await api.post('/channels', { name: cleanedName })
+      const newChannel = response.data
+      setSelectedChannelId(newChannel.id)
+      toast.success(t('toast.channelAdded'))
+      handleClose()
+    }
+    catch (err) {
+      console.error('Ошибка добавления канала', err)
+      toast.error(t('toast.errorAddChannel'))
+    }
+    finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -33,11 +45,7 @@ const AddChannelModal = ({ show, handleClose, channels, onAdd }) => {
       <Formik
         initialValues={{ name: '' }}
         validationSchema={validationSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          await onAdd(values.name)
-          setSubmitting(false)
-          handleClose()
-        }}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form>

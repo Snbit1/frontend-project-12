@@ -6,10 +6,10 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import NotFoundPage from './pages/NotFoundPage'
 import RequireAuth from './components/RequireAuth'
-import { logout } from './slices/authSlice'
+import { logout } from './store/slices/authSlice'
 import { Container, Navbar, Nav, Button } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { clearMessages } from './slices/messagesSlice'
+import { clearMessages } from './store/slices/messagesSlice'
 
 const App = () => {
   const { t } = useTranslation()

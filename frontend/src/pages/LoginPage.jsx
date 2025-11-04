@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
 import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import api from '../api/axios'
-import { loginSuccess } from '../slices/authSlice'
+import { loginSuccess } from '../store/slices/authSlice'
 import {
   Container,
   Row,
@@ -15,6 +14,7 @@ import {
   Card,
 } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { loginSchema } from '../validation/schemas'
 
 const LoginPage = () => {
   const { t } = useTranslation()
@@ -22,10 +22,32 @@ const LoginPage = () => {
   const dispatch = useDispatch()
   const [error, setError] = useState(null)
 
-  const validationSchema = Yup.object({
-    username: Yup.string().required(t('requiredField')),
-    password: Yup.string().required(t('requiredField')),
-  })
+  const validationSchema = loginSchema(t)
+
+  const handleLogin = async (values, { setSubmitting }) => {
+    setError(null)
+    try {
+      const response = await api.post('/login', values)
+      dispatch(
+        loginSuccess({
+          token: response.data.token,
+          user: { username: values.username },
+        }),
+      )
+      navigate('/')
+    }
+    catch (err) {
+      if (err.response && err.response.status === 401) {
+        setError(t('incorrectUser'))
+      }
+      else {
+        setError(t('networkError'))
+      }
+    }
+    finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <Container className="mt-5">
@@ -40,30 +62,7 @@ const LoginPage = () => {
               <Formik
                 initialValues={{ username: '', password: '' }}
                 validationSchema={validationSchema}
-                onSubmit={async (values, { setSubmitting }) => {
-                  setError(null)
-                  try {
-                    const response = await api.post('/login', values)
-                    dispatch(
-                      loginSuccess({
-                        token: response.data.token,
-                        user: { username: values.username },
-                      }),
-                    )
-                    navigate('/')
-                  }
-                  catch (err) {
-                    if (err.response && err.response.status === 401) {
-                      setError(t('incorrectUser'))
-                    }
-                    else {
-                      setError(t('networkError'))
-                    }
-                  }
-                  finally {
-                    setSubmitting(false)
-                  }
-                }}
+                onSubmit={handleLogin}
               >
                 {({ isSubmitting }) => (
                   <Form>

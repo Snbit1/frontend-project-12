@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchChannels } from '../slices/channelsSlice'
-import { addMessageLocal, fetchMessages } from '../slices/messagesSlice'
+import { fetchChannels } from '../store/slices/channelsSlice'
+import { addMessageLocal, fetchMessages } from '../store/slices/messagesSlice'
 import {
   addChannelLocal,
   removeChannelLocal,
   renameChannelLocal,
-} from '../slices/channelsSlice'
+} from '../store/slices/channelsSlice'
 import RenameChannelModal from '../components/RenameChannelModal'
 import {
   Row,
@@ -48,56 +48,14 @@ const ChatPage = () => {
   const handleOpenAddChannel = () => setShowAddChannelModal(true)
   const handleCloseAddChannel = () => setShowAddChannelModal(false)
 
-  const handleAddChannel = async (name) => {
-    try {
-      const cleanedName = cleanText(name)
-      const response = await api.post('/channels', { name: cleanedName })
-      const newChannel = response.data
-      setSelectedChannelId(newChannel.id)
-      toast.success(t('toast.channelAdded'))
-      handleCloseAddChannel()
-    }
-    catch (err) {
-      console.error('Ошибка добавления канала', err)
-      toast.error(t('toast.errorAddChannel'))
-    }
-  }
-
   const handleCloseRenameChannel = () => {
     setShowRenameModal(false)
     setChannelToRename(null)
   }
 
-  const handleRenameChannel = async (id, newName) => {
-    try {
-      const cleanedName = cleanText(newName)
-      await api.patch(`/channels/${id}`, { name: cleanedName })
-      toast.success(t('toast.channelRenamed'))
-      handleCloseRenameChannel()
-    }
-    catch (err) {
-      console.error('Ошибка переименования канала', err)
-      toast.error(t('toast.errorRenameChannel'))
-    }
-  }
-
   const handleOpenRenameChannel = (channel) => {
     setChannelToRename(channel)
     setShowRenameModal(true)
-  }
-
-  const handleDeleteChannel = async (id) => {
-    try {
-      await api.delete(`/channels/${id}`)
-      dispatch(removeChannelLocal(id))
-      if (selectedChannelId === id && channels.length > 0) {
-        setSelectedChannelId(channels[0].id)
-      }
-      toast.success(t('toast.channelDeleted'))
-    }
-    catch (err) {
-      console.error('Ошибка удаления канала', err)
-    }
   }
 
   const handleOpenDeleteChannel = (channel) => {
@@ -108,12 +66,6 @@ const ChatPage = () => {
   const handleCloseDeleteChannel = () => {
     setChannelToDelete(null)
     setShowDeleteModal(false)
-  }
-
-  const handleConfirmDeleteChannel = async () => {
-    if (!channelToDelete) return
-    await handleDeleteChannel(channelToDelete.id)
-    handleCloseDeleteChannel()
   }
 
   const formatMessagesCount = (count) => {
@@ -185,7 +137,7 @@ const ChatPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (channelsStatus === 'succeeded' && channels.length > 0) {
+    if (channelsStatus === 'succeeded' && channels.length > 0 && !selectedChannelId) {
       const generalChannel = channels.find(c => c.name === 'general')
       setSelectedChannelId(generalChannel?.id ?? channels[0].id)
     }
@@ -419,19 +371,21 @@ const ChatPage = () => {
         show={showAddChannelModal}
         handleClose={handleCloseAddChannel}
         channels={channels}
-        onAdd={handleAddChannel}
+        setSelectedChannelId={setSelectedChannelId}
       />
       <RenameChannelModal
         show={showRenameModal}
         handleClose={handleCloseRenameChannel}
         channels={channels}
         channel={channelToRename}
-        onRename={handleRenameChannel}
       />
       <ConfirmDeleteChannelModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteChannel}
-        onConfirm={handleConfirmDeleteChannel}
+        channel={channelToDelete}
+        channels={channels}
+        selectedChannelId={selectedChannelId}
+        setSelectedChannelId={setSelectedChannelId}
       />
     </Row>
   )

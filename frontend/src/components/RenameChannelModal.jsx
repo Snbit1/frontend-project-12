@@ -1,15 +1,17 @@
 import { useEffect, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
+import api from '../api/axios'
+import { toast } from 'react-toastify'
+import { cleanText } from '../utils/profanity'
+import { channelNameSchema } from '../validation/schemas'
 
 const RenameChannelModal = ({
   show,
   handleClose,
   channels,
   channel,
-  onRename,
 }) => {
   const { t } = useTranslation()
   const inputRef = useRef(null)
@@ -23,16 +25,23 @@ const RenameChannelModal = ({
   }, [show, channel])
 
   if (!channel) return null
-  const validationSchema = Yup.object({
-    name: Yup.string()
-      .min(3, t('usernameMin'))
-      .max(20, t('usernameMax'))
-      .notOneOf(
-        channels.map(c => c.name).filter(n => n !== channel.name),
-        t('channelExists'),
-      )
-      .required(t('requiredField')),
-  })
+  const validationSchema = channelNameSchema(t, channels.map(c => c.name), channel?.name)
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const cleanedName = cleanText(values.name)
+      await api.patch(`/channels/${channel.id}`, { name: cleanedName })
+      toast.success(t('toast.channelRenamed'))
+      handleClose()
+    }
+    catch (err) {
+      console.error('Ошибка переименования канала', err)
+      toast.error(t('toast.errorRenameChannel'))
+    }
+    finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -42,11 +51,7 @@ const RenameChannelModal = ({
       <Formik
         initialValues={{ name: channel.name }}
         validationSchema={validationSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          await onRename(channel.id, values.name)
-          setSubmitting(false)
-          handleClose()
-        }}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form>
