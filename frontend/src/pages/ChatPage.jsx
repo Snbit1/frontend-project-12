@@ -211,8 +211,8 @@ const ChatPage = () => {
   }
 
   return (
-    <Row>
-      <Col md={3}>
+    <Row className="h-100">
+      <Col md={3} className="h-100">
         <div className="d-flex justify-content-between align-items-center">
           <h5>{t('channels')}</h5>
           <Button
@@ -311,8 +311,8 @@ const ChatPage = () => {
         </ListGroup>
       </Col>
 
-      <Col md={9}>
-        <div className="d-flex flex-column mb-2">
+      <Col md={9} className="d-flex flex-column h-100">
+        <div className="d-flex flex-column mb-2 flex-shrink-0">
           <div className="fw-bold">
             <span style={{ marginRight: '0.25rem' }}>#</span>
             {selectedChannel?.name}
@@ -326,15 +326,7 @@ const ChatPage = () => {
             {isConnected ? t('online') : t('offline')}
           </div>
         </div>
-        <div
-          style={{
-            height: '400px',
-            overflowY: 'scroll',
-            border: '1px solid #ddd',
-            padding: '8px',
-            marginBottom: '12px',
-          }}
-        >
+        <div className="border rounded p-2 mb-2 flex-grow-1 overflow-auto">
           {filteredMessages.map((m, index) => (
             <div key={m.id ?? `msg-${index}`}>
               <strong style={{ marginRight: '0.25rem' }}>
@@ -346,10 +338,11 @@ const ChatPage = () => {
           ))}
         </div>
 
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="flex-shrink-0 mb-4">
           <div className="d-flex align-items-center">
             <Form.Control
               type="text"
+              autoComplete="off"
               placeholder={t('placeholderMessage')}
               value={newMessage}
               onChange={e => setNewMessage(e.target.value)}

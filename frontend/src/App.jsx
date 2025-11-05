@@ -34,7 +34,7 @@ const App = () => {
 
   return (
     <>
-      <Navbar bg="light" expand="lg" className="mb-4">
+      <Navbar bg="light" expand="lg" className="mb-4" fixed="top">
         <Container>
           <Navbar.Brand as={Link} to="/">
             {t('hexlet')}
@@ -60,7 +60,7 @@ const App = () => {
         </Container>
       </Navbar>
 
-      <Container>
+      <Container className="h-100" style={{ paddingTop: '60px' }}>
         <Routes>
           <Route
             path="/"

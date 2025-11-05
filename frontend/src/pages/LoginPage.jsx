@@ -71,6 +71,7 @@ const LoginPage = () => {
                         id="username"
                         name="username"
                         type="text"
+                        autoComplete="off"
                         as={BootstrapForm.Control}
                         placeholder={t('username2')}
                       />
@@ -89,6 +90,7 @@ const LoginPage = () => {
                         id="password"
                         name="password"
                         type="password"
+                        autoComplete="off"
                         as={BootstrapForm.Control}
                         placeholder={t('enterPassword')}
                       />

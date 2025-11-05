@@ -53,6 +53,7 @@ const AddChannelModal = ({ show, handleClose, channels, setSelectedChannelId }) 
               <label className="visually-hidden">Имя канала</label>
               <Field
                 name="name"
+                autoComplete="off"
                 innerRef={inputRef}
                 className="form-control"
                 aria-label="Имя канала"

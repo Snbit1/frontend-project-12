@@ -79,6 +79,7 @@ const SignupPage = () => {
                         id="username"
                         name="username"
                         type="text"
+                        autoComplete="off"
                         as={BootstrapForm.Control}
                         placeholder={t('username')}
                       />
@@ -97,6 +98,7 @@ const SignupPage = () => {
                         id="password"
                         name="password"
                         type="password"
+                        autoComplete="off"
                         as={BootstrapForm.Control}
                         placeholder={t('password')}
                       />
@@ -115,6 +117,7 @@ const SignupPage = () => {
                         id="confirmPassword"
                         name="confirmPassword"
                         type="password"
+                        autoComplete="off"
                         as={BootstrapForm.Control}
                         placeholder={t('confirmPassword')}
                       />

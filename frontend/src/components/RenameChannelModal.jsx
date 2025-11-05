@@ -58,6 +58,7 @@ const RenameChannelModal = ({
             <Modal.Body>
               <Field
                 name="name"
+                autoComplete="off"
                 innerRef={inputRef}
                 className="form-control"
                 placeholder={t('newChannelName')}
